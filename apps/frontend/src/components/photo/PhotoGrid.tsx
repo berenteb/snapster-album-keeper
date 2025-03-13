@@ -1,13 +1,14 @@
+import { formatDate } from "date-fns";
 import { Link } from "react-router-dom";
 
+import { FileListItemDto } from "@/api";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDate, Photo } from "@/services/photoService";
 
 interface PhotoGridProps {
-  photos: Photo[];
+  photos: FileListItemDto[];
 }
 
-const PhotoGrid = ({ photos }: PhotoGridProps) => {
+function PhotoGrid({ photos }: PhotoGridProps) {
   if (photos.length === 0) {
     return (
       <div className="text-center py-10">
@@ -23,17 +24,10 @@ const PhotoGrid = ({ photos }: PhotoGridProps) => {
       {photos.map((photo) => (
         <Link to={`/photo/${photo.id}`} key={photo.id}>
           <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
-            <div className="aspect-square overflow-hidden bg-gray-100">
-              <img
-                src={photo.url}
-                alt={photo.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
             <CardContent className="p-3">
               <h3 className="font-medium truncate text-sm">{photo.name}</h3>
               <p className="text-xs text-gray-500">
-                {formatDate(photo.createdAt)}
+                {formatDate(photo.createdAt, "yyyy-MM-dd")}
               </p>
             </CardContent>
           </Card>
@@ -41,6 +35,6 @@ const PhotoGrid = ({ photos }: PhotoGridProps) => {
       ))}
     </div>
   );
-};
+}
 
 export default PhotoGrid;

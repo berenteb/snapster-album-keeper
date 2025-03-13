@@ -4,18 +4,19 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { uploadPhoto } from "@/services/photoService";
+import { useUploadPhotoMutation } from "@/hooks/use-photos";
 
 interface PhotoUploaderProps {
   onUploadComplete: () => void;
 }
 
-const PhotoUploader = ({ onUploadComplete }: PhotoUploaderProps) => {
+function PhotoUploader({ onUploadComplete }: PhotoUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadPhoto = useUploadPhotoMutation();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,7 +77,7 @@ const PhotoUploader = ({ onUploadComplete }: PhotoUploaderProps) => {
 
     try {
       setIsUploading(true);
-      await uploadPhoto(selectedFile);
+      await uploadPhoto.mutateAsync(selectedFile);
       clearSelection();
       onUploadComplete();
     } catch (error) {
@@ -103,7 +104,7 @@ const PhotoUploader = ({ onUploadComplete }: PhotoUploaderProps) => {
             ref={fileInputRef}
             onChange={handleFileChange}
             className="hidden"
-            accept="image/*"
+            accept="image/png, image/jpeg, image/jpg"
           />
 
           {previewUrl ? (
@@ -122,8 +123,8 @@ const PhotoUploader = ({ onUploadComplete }: PhotoUploaderProps) => {
                 </button>
               </div>
               <div className="text-sm text-gray-500 truncate">
-                {selectedFile?.name} ({Math.round(selectedFile?.size! / 1024)}{" "}
-                KB)
+                {selectedFile?.name} (
+                {Math.round((selectedFile?.size ?? 0) / 1024)} KB)
               </div>
               <div className="flex justify-end gap-2">
                 <Button
@@ -169,6 +170,6 @@ const PhotoUploader = ({ onUploadComplete }: PhotoUploaderProps) => {
       </CardContent>
     </Card>
   );
-};
+}
 
 export default PhotoUploader;

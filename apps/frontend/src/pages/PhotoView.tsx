@@ -1,34 +1,16 @@
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Header from "@/components/layout/Header";
 import PageContainer from "@/components/layout/PageContainer";
 import PhotoDetail from "@/components/photo/PhotoDetail";
-import { getPhotoById, Photo } from "@/services/photoService";
+import { usePhotoQuery } from "@/hooks/use-photos";
 
-const PhotoView = () => {
+function PhotoView() {
   const { id } = useParams<{ id: string }>();
-  const [photo, setPhoto] = useState<Photo | null>(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const photoQuery = usePhotoQuery(id);
 
-  useEffect(() => {
-    if (id) {
-      const foundPhoto = getPhotoById(id);
-
-      if (foundPhoto) {
-        setPhoto(foundPhoto);
-      } else {
-        // Photo not found, redirect to home page
-        navigate("/");
-      }
-
-      setLoading(false);
-    }
-  }, [id, navigate]);
-
-  if (loading) {
+  if (photoQuery.isLoading) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -39,7 +21,7 @@ const PhotoView = () => {
     );
   }
 
-  if (!photo) {
+  if (!photoQuery.data) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -59,10 +41,10 @@ const PhotoView = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <PageContainer>
-        <PhotoDetail photo={photo} />
+        <PhotoDetail photo={photoQuery.data} />
       </PageContainer>
     </div>
   );
-};
+}
 
 export default PhotoView;

@@ -1,5 +1,5 @@
 import { ImagePlus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Header from "@/components/layout/Header";
 import PageContainer from "@/components/layout/PageContainer";
@@ -7,25 +7,14 @@ import PhotoGrid from "@/components/photo/PhotoGrid";
 import PhotoUploader from "@/components/photo/PhotoUploader";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getAllPhotos, Photo } from "@/services/photoService";
+import { usePhotosQuery } from "@/hooks/use-photos";
 
-const Index = () => {
-  const [photos, setPhotos] = useState<Photo[]>([]);
+function Index() {
+  const photoListQuery = usePhotosQuery();
   const [showUploader, setShowUploader] = useState(false);
   const [activeTab, setActiveTab] = useState("grid");
 
-  useEffect(() => {
-    // Load photos when component mounts
-    loadPhotos();
-  }, []);
-
-  const loadPhotos = () => {
-    const allPhotos = getAllPhotos();
-    setPhotos(allPhotos);
-  };
-
   const handleUploadComplete = () => {
-    loadPhotos();
     setShowUploader(false);
   };
 
@@ -67,12 +56,12 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="grid" className="mt-0">
-            <PhotoGrid photos={photos} />
+            <PhotoGrid photos={photoListQuery.data ?? []} />
           </TabsContent>
 
           <TabsContent value="list" className="mt-0">
             <div className="rounded-md border">
-              {photos.length === 0 ? (
+              {photoListQuery.data?.length === 0 ? (
                 <div className="text-center py-10">
                   <p className="text-lg text-gray-500">
                     No photos yet. Upload some memories!
@@ -80,19 +69,12 @@ const Index = () => {
                 </div>
               ) : (
                 <div className="divide-y">
-                  {photos.map((photo) => (
+                  {photoListQuery.data?.map((photo) => (
                     <a
                       key={photo.id}
                       href={`/photo/${photo.id}`}
                       className="flex items-center p-4 hover:bg-gray-50 transition-colors"
                     >
-                      <div className="h-16 w-16 rounded overflow-hidden bg-gray-100 mr-4">
-                        <img
-                          src={photo.url}
-                          alt={photo.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{photo.name}</p>
                         <p className="text-sm text-gray-500">
@@ -109,6 +91,6 @@ const Index = () => {
       </PageContainer>
     </div>
   );
-};
+}
 
 export default Index;

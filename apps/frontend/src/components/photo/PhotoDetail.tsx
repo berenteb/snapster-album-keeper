@@ -1,7 +1,8 @@
-import { Calendar, FileText, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { formatDate } from "date-fns";
+import { Calendar, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { FileDetailDto } from "@/api";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,25 +16,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  deletePhoto,
-  formatDate,
-  formatFileSize,
-  Photo,
-} from "@/services/photoService";
+import { useDeletePhotoMutation } from "@/hooks/use-photos";
 
 interface PhotoDetailProps {
-  photo: Photo;
+  photo: FileDetailDto;
 }
 
-const PhotoDetail = ({ photo }: PhotoDetailProps) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+function PhotoDetail({ photo }: PhotoDetailProps) {
+  const deletePhoto = useDeletePhotoMutation(photo.id);
   const navigate = useNavigate();
 
   const handleDelete = async () => {
     try {
-      setIsDeleting(true);
-      await deletePhoto(photo.id);
+      await deletePhoto.mutateAsync();
       navigate("/");
     } catch (error) {
       console.error("Delete error:", error);
@@ -44,11 +39,17 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
     <div className="animate-fade-in space-y-6">
       <Card className="overflow-hidden">
         <div className="relative w-full max-h-[70vh] overflow-hidden bg-gray-100">
-          <img
-            src={photo.url}
-            alt={photo.name}
-            className="w-full h-full object-contain"
-          />
+          {photo.url ? (
+            <img
+              src={photo.url}
+              alt={photo.name}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <p className="text-gray-500">No image available</p>
+            </div>
+          )}
         </div>
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -57,14 +58,8 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
               <div className="flex flex-wrap gap-4 mt-2">
                 <div className="flex items-center text-sm text-gray-500">
                   <Calendar className="h-4 w-4 mr-1" />
-                  {formatDate(photo.createdAt)}
+                  {formatDate(photo.createdAt, "yyyy-MM-dd")}
                 </div>
-                {photo.size && (
-                  <div className="flex items-center text-sm text-gray-500">
-                    <FileText className="h-4 w-4 mr-1" />
-                    {formatFileSize(photo.size)}
-                  </div>
-                )}
               </div>
             </div>
             <div className="flex gap-2 ml-auto">
@@ -91,9 +86,9 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
                     <AlertDialogAction
                       onClick={handleDelete}
                       className="bg-red-500 hover:bg-red-600"
-                      disabled={isDeleting}
+                      disabled={deletePhoto.isPending}
                     >
-                      {isDeleting ? "Deleting..." : "Delete"}
+                      {deletePhoto.isPending ? "Deleting..." : "Delete"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -104,6 +99,6 @@ const PhotoDetail = ({ photo }: PhotoDetailProps) => {
       </Card>
     </div>
   );
-};
+}
 
 export default PhotoDetail;
