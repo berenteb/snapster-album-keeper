@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Controller,
   Delete,
   FileTypeValidator,
@@ -10,30 +9,35 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBody,
   ApiConsumes,
+  ApiCookieAuth,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
 } from "@nestjs/swagger";
-import environment from "src/config/environment";
-import { PrismaService } from "src/prisma/prisma.service";
 
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { UserDto } from "../auth/dto/auth.dto";
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
+import environment from "../config/environment";
+import { PrismaService } from "../prisma/prisma.service";
 import { FileDetailDto, FileListItemDto } from "./file.dto";
 import { FileService } from "./file.service";
 
 @Controller("files")
+@UseGuards(JwtAuthGuard)
+@ApiCookieAuth()
 export class FileController {
   constructor(
     private readonly fileService: FileService,
     private readonly prismaService: PrismaService,
   ) {}
-
-  private readonly userId = "default";
 
   @Get()
   @ApiOperation({ summary: "Get all files" })
@@ -43,10 +47,10 @@ export class FileController {
     type: FileListItemDto,
     isArray: true,
   })
-  async getFiles(): Promise<FileListItemDto[]> {
+  async getFiles(@CurrentUser() user: UserDto): Promise<FileListItemDto[]> {
     return this.prismaService.file.findMany({
       where: {
-        userId: this.userId,
+        userId: user.id,
       },
     });
   }
@@ -61,11 +65,14 @@ export class FileController {
   @ApiNotFoundResponse({
     description: "The file was not found",
   })
-  async getFile(@Param("id") id: string): Promise<FileDetailDto> {
+  async getFile(
+    @Param("id") id: string,
+    @CurrentUser() user: UserDto,
+  ): Promise<FileDetailDto> {
     const file = await this.prismaService.file.findUnique({
       where: {
         id,
-        userId: this.userId,
+        userId: user.id,
       },
     });
     if (!file) throw new NotFoundException("File not found");
@@ -111,12 +118,13 @@ export class FileController {
       }),
     )
     file: Express.Multer.File,
+    @CurrentUser() user: UserDto,
   ): Promise<FileListItemDto> {
-    const uploadedFile = await this.fileService.uploadFile(this.userId, file);
+    const uploadedFile = await this.fileService.uploadFile(user.id, file);
     return this.prismaService.file.create({
       data: {
         name: uploadedFile,
-        userId: this.userId,
+        userId: user.id,
       },
     });
   }
@@ -127,21 +135,24 @@ export class FileController {
     status: 200,
     description: "The file was deleted",
   })
-  async deleteFile(@Param("id") id: string): Promise<void> {
+  async deleteFile(
+    @Param("id") id: string,
+    @CurrentUser() user: UserDto,
+  ): Promise<void> {
     const file = await this.prismaService.file.findUnique({
       where: {
         id,
-        userId: this.userId,
+        userId: user.id,
       },
     });
     if (!file) return;
 
     await this.prismaService.$transaction(async (tx) => {
-      await this.fileService.deleteFile(this.userId, file.name);
+      await this.fileService.deleteFile(user.id, file.name);
       return tx.file.delete({
         where: {
           id,
-          userId: this.userId,
+          userId: user.id,
         },
       });
     });
