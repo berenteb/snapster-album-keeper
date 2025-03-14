@@ -22,6 +22,11 @@
 
     # health check for railway
     rewrite /health /*
+    # Rewrite API requests to the backend URL
+    rewrite /api/* {
+        uri strip_prefix /api
+        to {$CADDY_BACKEND_URL}{uri}
+    }
 
     # serve from the 'dist' folder (Vite builds into the 'dist' folder)
     root * apps/frontend/dist
