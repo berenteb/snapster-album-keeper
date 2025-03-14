@@ -8,6 +8,7 @@
     "dev:backend": "yarn workspace @snapster/backend dev",
     "build:frontend": "yarn workspace @snapster/frontend build",
     "build:backend": "yarn workspace @snapster/backend build",
+    "start:backend:prod": "yarn workspace @snapster/backend start:prod",
     "generate-api": "openapi-generator-cli generate -i http://localhost:3001/api-json -g typescript-axios -o apps/frontend/src/api",
     "lint": "eslint ."
   },
