@@ -1,1 +1,12 @@
-buildImage = 'ghcr.io/railwayapp/nixpacks:latest'
+[variables]
+    nixpkgsArchive = '8b27c1239e5c421a2bbc2c65d52e4a6fbf2ff296'
+
+[phases.setup]
+    cmds = ['yarn install']
+    
+[phases.build]
+    cmds = ['yarn build:backend']
+
+[start]
+    cmd = 'yarn start:prod:backend'
+
