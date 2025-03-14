@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "build": "prisma generate && nest build",
     "start": "nest start",
