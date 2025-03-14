@@ -5,9 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import AddPhotosToAlbumDialog from "@/components/album/AddPhotosToAlbumDialog";
+import AlbumPhotoGrid from "@/components/album/AlbumPhotoGrid";
 import Header from "@/components/layout/Header";
 import PageContainer from "@/components/layout/PageContainer";
-import PhotoGrid from "@/components/photo/PhotoGrid";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,17 +20,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  useAlbumQuery,
-  useDeleteAlbumMutation,
-  useRemoveFromAlbumMutation,
-} from "@/hooks/use-albums";
+import { useAlbumQuery, useDeleteAlbumMutation } from "@/hooks/use-albums";
 
 function AlbumView() {
   const { id } = useParams<{ id: string }>();
   const albumQuery = useAlbumQuery(id);
   const deleteAlbum = useDeleteAlbumMutation();
-  const removeFromAlbum = useRemoveFromAlbumMutation();
   const navigate = useNavigate();
   const [isAddPhotosDialogOpen, setIsAddPhotosDialogOpen] = useState(false);
 
@@ -150,7 +145,7 @@ function AlbumView() {
             </Button>
           </div>
         ) : (
-          <PhotoGrid photos={albumQuery.data.files} />
+          <AlbumPhotoGrid photos={albumQuery.data.files} albumId={id} />
         )}
 
         <AddPhotosToAlbumDialog
