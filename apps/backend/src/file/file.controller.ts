@@ -78,7 +78,7 @@ export class FileController {
     if (!file) throw new NotFoundException("File not found");
     return {
       ...file,
-      url: await this.fileService.getFileUrl(file.name),
+      url: await this.fileService.getFileUrl(user.id, file.name),
     };
   }
 

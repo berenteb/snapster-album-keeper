@@ -15,17 +15,16 @@ export class FileService implements OnModuleInit {
   }
 
   async uploadFile(userId: string, file: Express.Multer.File) {
-    return this.uploader.upload(
-      file.buffer,
-      this.getFileName(
-        userId,
-        `${file.originalname}-${this.generateId()}.${file.mimetype.split("/")[1]}`,
-      ),
-    );
+    const fileName = `${this.removeExtension(file.originalname)}-${this.generateId()}.${file.mimetype.split("/")[1]}`;
+    await this.uploader.upload(file.buffer, this.getFileName(userId, fileName));
+    return fileName;
   }
 
-  async getFileUrl(fileName: string) {
-    return this.uploader.getSignedUrl(fileName, 60 * 60);
+  async getFileUrl(userId: string, fileName: string) {
+    return this.uploader.getSignedUrl(
+      this.getFileName(userId, fileName),
+      60 * 60,
+    );
   }
 
   async deleteFile(userId: string, fileName: string) {
@@ -34,6 +33,10 @@ export class FileService implements OnModuleInit {
 
   private getFileName(userId: string, fileName: string) {
     return `${userId}/${fileName}`;
+  }
+
+  private removeExtension(fileName: string) {
+    return fileName.split(".").slice(0, -1).join(".");
   }
 
   private generateId() {
