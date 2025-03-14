@@ -1,5 +1,13 @@
 name: snapster-dev
 services:
+  postgres:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: snapster
+      POSTGRES_PASSWORD: snapster
+      POSTGRES_DB: snapster
   minio:
     image: minio/minio:latest
     ports:
