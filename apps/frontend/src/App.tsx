@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { AuthProvider } from "./contexts/auth-context";
 import Albums from "./pages/Albums";
+import AlbumView from "./pages/AlbumView";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/albums" element={<Albums />} />
+              <Route path="/albums/:id" element={<AlbumView />} />
               <Route path="/photo/:id" element={<PhotoView />} />
               <Route path="/" element={<Index />} />
             </Route>

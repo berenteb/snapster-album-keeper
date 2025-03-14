@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
 
 import { Injectable, OnModuleInit } from "@nestjs/common";
+import { File } from "@prisma/client";
 
 import { MinioService, MinioUploader } from "../minio/minio.service";
+import { FileDto } from "./file.dto";
 
 @Injectable()
 export class FileService implements OnModuleInit {
@@ -24,6 +26,23 @@ export class FileService implements OnModuleInit {
     return this.uploader.getSignedUrl(
       this.getFileName(userId, fileName),
       60 * 60,
+    );
+  }
+
+  async getFileDto(userId: string, file: File): Promise<FileDto> {
+    return {
+      id: file.id,
+      userId: file.userId,
+      updatedAt: file.updatedAt,
+      name: file.name,
+      createdAt: file.createdAt,
+      url: await this.getFileUrl(userId, file.name),
+    };
+  }
+
+  async getFileDtos(userId: string, files: File[]): Promise<FileDto[]> {
+    return Promise.all(
+      files.map(async (file) => this.getFileDto(userId, file)),
     );
   }
 

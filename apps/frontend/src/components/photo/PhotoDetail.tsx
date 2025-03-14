@@ -3,6 +3,7 @@ import { Calendar, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { FileDetailDto } from "@/api";
+import AddToAlbumDropdown from "@/components/album/AddToAlbumDropdown";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,6 +64,7 @@ function PhotoDetail({ photo }: PhotoDetailProps) {
               </div>
             </div>
             <div className="flex gap-2 ml-auto">
+              <AddToAlbumDropdown fileId={photo.id} />
               <Button variant="outline" onClick={() => navigate("/")}>
                 Back
               </Button>

@@ -27,7 +27,7 @@ import { UserDto } from "../auth/dto/auth.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import environment from "../config/environment";
 import { PrismaService } from "../prisma/prisma.service";
-import { FileDetailDto, FileListItemDto } from "./file.dto";
+import { FileDto } from "./file.dto";
 import { FileService } from "./file.service";
 
 @Controller("files")
@@ -44,15 +44,16 @@ export class FileController {
   @ApiResponse({
     status: 200,
     description: "The list of files",
-    type: FileListItemDto,
+    type: FileDto,
     isArray: true,
   })
-  async getFiles(@CurrentUser() user: UserDto): Promise<FileListItemDto[]> {
-    return this.prismaService.file.findMany({
+  async getFiles(@CurrentUser() user: UserDto): Promise<FileDto[]> {
+    const files = await this.prismaService.file.findMany({
       where: {
         userId: user.id,
       },
     });
+    return this.fileService.getFileDtos(user.id, files);
   }
 
   @Get(":id")
@@ -60,7 +61,7 @@ export class FileController {
   @ApiResponse({
     status: 200,
     description: "The file",
-    type: FileDetailDto,
+    type: FileDto,
   })
   @ApiNotFoundResponse({
     description: "The file was not found",
@@ -68,7 +69,7 @@ export class FileController {
   async getFile(
     @Param("id") id: string,
     @CurrentUser() user: UserDto,
-  ): Promise<FileDetailDto> {
+  ): Promise<FileDto> {
     const file = await this.prismaService.file.findUnique({
       where: {
         id,
@@ -76,10 +77,7 @@ export class FileController {
       },
     });
     if (!file) throw new NotFoundException("File not found");
-    return {
-      ...file,
-      url: await this.fileService.getFileUrl(user.id, file.name),
-    };
+    return this.fileService.getFileDto(user.id, file);
   }
 
   @Post()
@@ -88,7 +86,7 @@ export class FileController {
   @ApiResponse({
     status: 201,
     description: "The file was uploaded",
-    type: FileListItemDto,
+    type: FileDto,
   })
   @ApiBody({
     schema: {
@@ -119,14 +117,15 @@ export class FileController {
     )
     file: Express.Multer.File,
     @CurrentUser() user: UserDto,
-  ): Promise<FileListItemDto> {
+  ): Promise<FileDto> {
     const uploadedFile = await this.fileService.uploadFile(user.id, file);
-    return this.prismaService.file.create({
+    const createdFile = await this.prismaService.file.create({
       data: {
         name: uploadedFile,
         userId: user.id,
       },
     });
+    return this.fileService.getFileDto(user.id, createdFile);
   }
 
   @Delete(":id")

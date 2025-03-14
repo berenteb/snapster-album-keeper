@@ -9,5 +9,6 @@ import { FileService } from "./file.service";
   imports: [MinioModule, PrismaModule],
   controllers: [FileController],
   providers: [FileService],
+  exports: [FileService],
 })
 export class FileModule {}

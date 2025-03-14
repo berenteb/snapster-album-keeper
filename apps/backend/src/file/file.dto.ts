@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { File } from "@prisma/client";
-export class FileListItemDto implements File {
+
+export class FileDto implements File {
   @ApiProperty({
     description: "The ID of the file",
     example: "123e4567-e89b-12d3-a456-426614174000",
@@ -26,9 +27,7 @@ export class FileListItemDto implements File {
     example: "2021-01-01T00:00:00.000Z",
   })
   createdAt: Date;
-}
 
-export class FileDetailDto extends FileListItemDto {
   @ApiProperty({
     description: "The URL of the file",
     example: "https://example.com/file.jpg",
