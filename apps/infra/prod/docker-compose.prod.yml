@@ -1,0 +1,11 @@
+name: snapster-prod
+
+services:
+  frontend:
+    build:
+      context: ../../..
+      dockerfile: apps/infra/prod/Dockerfile.frontend
+    ports:
+      - 3000:3000
+    environment:
+      - VITE_BACKEND_URL=http://localhost:3001
