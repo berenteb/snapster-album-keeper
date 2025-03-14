@@ -38,11 +38,11 @@ export function useUploadPhotoMutation() {
   });
 }
 
-export function useDeletePhotoMutation(id: string) {
+export function useDeletePhotoMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => deletePhoto(id),
+    mutationFn: (id: string) => deletePhoto(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: photosKeys.list() });
     },

@@ -2,7 +2,6 @@ import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { FileListItemDto } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,8 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useAddToAlbumMutation } from "@/hooks/use-albums";
-import { useAlbumQuery } from "@/hooks/use-albums";
+import { useAddToAlbumMutation, useAlbumQuery } from "@/hooks/use-albums";
 import { usePhotosQuery } from "@/hooks/use-photos";
 
 interface AddPhotosToAlbumDialogProps {

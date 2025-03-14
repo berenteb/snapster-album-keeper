@@ -2,7 +2,7 @@ import { formatDate } from "date-fns";
 import { Calendar, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { FileDetailDto } from "@/api";
+import { FileDto } from "@/api";
 import AddToAlbumDropdown from "@/components/album/AddToAlbumDropdown";
 import {
   AlertDialog,
@@ -20,16 +20,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useDeletePhotoMutation } from "@/hooks/use-photos";
 
 interface PhotoDetailProps {
-  photo: FileDetailDto;
+  photo: FileDto;
 }
 
 function PhotoDetail({ photo }: PhotoDetailProps) {
-  const deletePhoto = useDeletePhotoMutation(photo.id);
+  const deletePhoto = useDeletePhotoMutation();
   const navigate = useNavigate();
 
   const handleDelete = async () => {
     try {
-      await deletePhoto.mutateAsync();
+      await deletePhoto.mutateAsync(photo.id);
       navigate("/");
     } catch (error) {
       console.error("Delete error:", error);
@@ -44,7 +44,7 @@ function PhotoDetail({ photo }: PhotoDetailProps) {
             <img
               src={photo.url}
               alt={photo.name}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain max-h-[70vh]"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">

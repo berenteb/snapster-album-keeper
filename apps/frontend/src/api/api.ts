@@ -74,10 +74,10 @@ export interface AlbumDetailDto {
     'updatedAt': string;
     /**
      * The files in the album
-     * @type {Array<FileListItemDto>}
+     * @type {Array<FileDto>}
      * @memberof AlbumDetailDto
      */
-    'files': Array<FileListItemDto>;
+    'files': Array<FileDto>;
 }
 /**
  * 
@@ -181,82 +181,45 @@ export interface CreateAlbumDto {
 /**
  * 
  * @export
- * @interface FileDetailDto
+ * @interface FileDto
  */
-export interface FileDetailDto {
+export interface FileDto {
     /**
      * The ID of the file
      * @type {string}
-     * @memberof FileDetailDto
+     * @memberof FileDto
      */
     'id': string;
     /**
      * The ID of the user who owns the file
      * @type {string}
-     * @memberof FileDetailDto
+     * @memberof FileDto
      */
     'userId': string;
     /**
      * The date the file was updated
      * @type {string}
-     * @memberof FileDetailDto
+     * @memberof FileDto
      */
     'updatedAt': string;
     /**
      * The name of the file
      * @type {string}
-     * @memberof FileDetailDto
+     * @memberof FileDto
      */
     'name': string;
     /**
      * The date the file was created
      * @type {string}
-     * @memberof FileDetailDto
+     * @memberof FileDto
      */
     'createdAt': string;
     /**
      * The URL of the file
      * @type {string}
-     * @memberof FileDetailDto
+     * @memberof FileDto
      */
     'url': string | null;
-}
-/**
- * 
- * @export
- * @interface FileListItemDto
- */
-export interface FileListItemDto {
-    /**
-     * The ID of the file
-     * @type {string}
-     * @memberof FileListItemDto
-     */
-    'id': string;
-    /**
-     * The ID of the user who owns the file
-     * @type {string}
-     * @memberof FileListItemDto
-     */
-    'userId': string;
-    /**
-     * The date the file was updated
-     * @type {string}
-     * @memberof FileListItemDto
-     */
-    'updatedAt': string;
-    /**
-     * The name of the file
-     * @type {string}
-     * @memberof FileListItemDto
-     */
-    'name': string;
-    /**
-     * The date the file was created
-     * @type {string}
-     * @memberof FileListItemDto
-     */
-    'createdAt': string;
 }
 /**
  * 
@@ -1288,7 +1251,7 @@ export const FileApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async fileControllerGetFile(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileDetailDto>> {
+        async fileControllerGetFile(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.fileControllerGetFile(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['FileApi.fileControllerGetFile']?.[localVarOperationServerIndex]?.url;
@@ -1300,7 +1263,7 @@ export const FileApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async fileControllerGetFiles(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<FileListItemDto>>> {
+        async fileControllerGetFiles(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<FileDto>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.fileControllerGetFiles(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['FileApi.fileControllerGetFiles']?.[localVarOperationServerIndex]?.url;
@@ -1313,7 +1276,7 @@ export const FileApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async fileControllerUploadFile(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileListItemDto>> {
+        async fileControllerUploadFile(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.fileControllerUploadFile(file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['FileApi.fileControllerUploadFile']?.[localVarOperationServerIndex]?.url;
@@ -1346,7 +1309,7 @@ export const FileApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileControllerGetFile(id: string, options?: RawAxiosRequestConfig): AxiosPromise<FileDetailDto> {
+        fileControllerGetFile(id: string, options?: RawAxiosRequestConfig): AxiosPromise<FileDto> {
             return localVarFp.fileControllerGetFile(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1355,7 +1318,7 @@ export const FileApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileControllerGetFiles(options?: RawAxiosRequestConfig): AxiosPromise<Array<FileListItemDto>> {
+        fileControllerGetFiles(options?: RawAxiosRequestConfig): AxiosPromise<Array<FileDto>> {
             return localVarFp.fileControllerGetFiles(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1365,7 +1328,7 @@ export const FileApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileControllerUploadFile(file?: File, options?: RawAxiosRequestConfig): AxiosPromise<FileListItemDto> {
+        fileControllerUploadFile(file?: File, options?: RawAxiosRequestConfig): AxiosPromise<FileDto> {
             return localVarFp.fileControllerUploadFile(file, options).then((request) => request(axios, basePath));
         },
     };

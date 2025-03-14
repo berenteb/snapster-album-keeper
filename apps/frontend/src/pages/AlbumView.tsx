@@ -6,6 +6,10 @@ import { toast } from "sonner";
 
 import AddPhotosToAlbumDialog from "@/components/album/AddPhotosToAlbumDialog";
 import AlbumPhotoGrid from "@/components/album/AlbumPhotoGrid";
+import SortingDropdown, {
+  SortDirection,
+  SortField,
+} from "@/components/common/SortingDropdown";
 import Header from "@/components/layout/Header";
 import PageContainer from "@/components/layout/PageContainer";
 import {
@@ -21,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useAlbumQuery, useDeleteAlbumMutation } from "@/hooks/use-albums";
+import { sortItems } from "@/utils/sorting";
 
 function AlbumView() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +33,8 @@ function AlbumView() {
   const deleteAlbum = useDeleteAlbumMutation();
   const navigate = useNavigate();
   const [isAddPhotosDialogOpen, setIsAddPhotosDialogOpen] = useState(false);
+  const [sortField, setSortField] = useState<SortField>("createdAt");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const handleDeleteAlbum = async () => {
     try {
@@ -39,6 +46,10 @@ function AlbumView() {
       toast.error("Failed to delete album");
     }
   };
+
+  const sortedPhotos = albumQuery.data?.files
+    ? sortItems(albumQuery.data.files, sortField, sortDirection)
+    : [];
 
   if (albumQuery.isLoading) {
     return (
@@ -145,7 +156,21 @@ function AlbumView() {
             </Button>
           </div>
         ) : (
-          <AlbumPhotoGrid photos={albumQuery.data.files} albumId={id} />
+          <>
+            <div className="flex justify-between items-center mb-4">
+              <div className="text-sm text-gray-500">
+                {albumQuery.data.files.length}{" "}
+                {albumQuery.data.files.length === 1 ? "photo" : "photos"}
+              </div>
+              <SortingDropdown
+                sortField={sortField}
+                sortDirection={sortDirection}
+                onSortFieldChange={setSortField}
+                onSortDirectionChange={setSortDirection}
+              />
+            </div>
+            <AlbumPhotoGrid photos={sortedPhotos} albumId={id} />
+          </>
         )}
 
         <AddPhotosToAlbumDialog

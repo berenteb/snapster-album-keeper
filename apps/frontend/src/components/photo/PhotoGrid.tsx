@@ -1,11 +1,11 @@
 import { formatDate } from "date-fns";
 import { Link } from "react-router-dom";
 
-import { FileListItemDto } from "@/api";
+import { FileDto } from "@/api";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface PhotoGridProps {
-  photos: FileListItemDto[];
+  photos: FileDto[];
 }
 
 function PhotoGrid({ photos }: PhotoGridProps) {
@@ -22,16 +22,28 @@ function PhotoGrid({ photos }: PhotoGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in">
       {photos.map((photo) => (
-        <Link to={`/photo/${photo.id}`} key={photo.id}>
-          <Card className="overflow-hidden group hover:shadow-md transition-all duration-300">
-            <CardContent className="p-3">
-              <h3 className="font-medium truncate text-sm">{photo.name}</h3>
-              <p className="text-xs text-gray-500">
-                {formatDate(photo.createdAt, "yyyy-MM-dd")}
-              </p>
-            </CardContent>
-          </Card>
-        </Link>
+        <Card
+          key={photo.id}
+          className="overflow-hidden group hover:shadow-md transition-all duration-300"
+        >
+          <div className="relative">
+            <Link to={`/photo/${photo.id}`}>
+              <div className="aspect-square bg-gray-100 overflow-hidden">
+                <img
+                  src={photo.url}
+                  alt={photo.name}
+                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                />
+              </div>
+            </Link>
+          </div>
+          <CardContent className="p-3">
+            <h3 className="font-medium truncate text-sm">{photo.name}</h3>
+            <p className="text-xs text-gray-500">
+              {formatDate(photo.createdAt, "yyyy-MM-dd")}
+            </p>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

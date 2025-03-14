@@ -3,9 +3,7 @@ import { Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
-import { FileListItemDto } from "@/api";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { FileDto } from "@/api";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,14 +15,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useRemoveFromAlbumMutation } from "@/hooks/use-albums";
 
 interface AlbumPhotoGridProps {
-  photos: FileListItemDto[];
+  photos: FileDto[];
   albumId: string;
 }
 
-export default function AlbumPhotoGrid({ photos, albumId }: AlbumPhotoGridProps) {
+export default function AlbumPhotoGrid({
+  photos,
+  albumId,
+}: AlbumPhotoGridProps) {
   const removeFromAlbum = useRemoveFromAlbumMutation();
 
   const handleRemoveFromAlbum = async (fileId: string) => {
@@ -40,9 +43,7 @@ export default function AlbumPhotoGrid({ photos, albumId }: AlbumPhotoGridProps)
   if (photos.length === 0) {
     return (
       <div className="text-center py-10">
-        <p className="text-lg text-gray-500">
-          No photos in this album yet.
-        </p>
+        <p className="text-lg text-gray-500">No photos in this album yet.</p>
       </div>
     );
   }
@@ -50,7 +51,10 @@ export default function AlbumPhotoGrid({ photos, albumId }: AlbumPhotoGridProps)
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in">
       {photos.map((photo) => (
-        <Card key={photo.id} className="overflow-hidden group hover:shadow-md transition-all duration-300">
+        <Card
+          key={photo.id}
+          className="overflow-hidden group hover:shadow-md transition-all duration-300"
+        >
           <div className="relative">
             <Link to={`/photo/${photo.id}`}>
               <div className="aspect-square bg-gray-100 overflow-hidden">
@@ -63,9 +67,9 @@ export default function AlbumPhotoGrid({ photos, albumId }: AlbumPhotoGridProps)
             </Link>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button 
-                  variant="destructive" 
-                  size="icon" 
+                <Button
+                  variant="destructive"
+                  size="icon"
                   className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -75,7 +79,8 @@ export default function AlbumPhotoGrid({ photos, albumId }: AlbumPhotoGridProps)
                 <AlertDialogHeader>
                   <AlertDialogTitle>Remove from album?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will remove the photo from this album. The photo will still be available in your library.
+                    This will remove the photo from this album. The photo will
+                    still be available in your library.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
