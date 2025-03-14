@@ -79,11 +79,12 @@ function Index() {
           />
         </div>
 
-        {photoListQuery.isLoading ? (
+        {photoListQuery.isLoading && (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
           </div>
-        ) : photoListQuery.data?.length === 0 ? (
+        )}
+        {photoListQuery.data && photoListQuery.data.length === 0 && (
           <div className="text-center py-12 border rounded-md bg-gray-50">
             <h3 className="text-xl font-medium mb-2">No photos yet</h3>
             <p className="text-gray-500 max-w-md mx-auto mb-6">
@@ -97,7 +98,8 @@ function Index() {
               Upload Photo
             </Button>
           </div>
-        ) : (
+        )}
+        {photoListQuery.data && photoListQuery.data.length > 0 && (
           <Tabs value={activeTab} className="w-full">
             <TabsContent value="grid" className="mt-0">
               <PhotoGrid photos={sortedPhotos} />

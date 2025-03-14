@@ -32,11 +32,12 @@ const Albums = () => {
           </Button>
         </div>
 
-        {albumsQuery.isLoading ? (
+        {albumsQuery.isLoading && (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
           </div>
-        ) : albumsQuery.data?.length === 0 ? (
+        )}
+        {albumsQuery.data && albumsQuery.data.length === 0 && (
           <div className="text-center py-12 border rounded-md bg-gray-50">
             <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
               <FolderPlus className="h-8 w-8 text-gray-400" />
@@ -53,8 +54,9 @@ const Albums = () => {
               Create Album
             </Button>
           </div>
-        ) : (
-          <AlbumGrid albums={albumsQuery.data || []} />
+        )}
+        {albumsQuery.data && albumsQuery.data.length > 0 && (
+          <AlbumGrid albums={albumsQuery.data} />
         )}
 
         <AlbumCreateDialog

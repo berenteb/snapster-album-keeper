@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAddToAlbumMutation, useAlbumQuery } from "@/hooks/use-albums";
 import { usePhotosQuery } from "@/hooks/use-photos";
+import { cn } from "@/lib/utils";
 
 interface AddPhotosToAlbumDialogProps {
   open: boolean;
@@ -81,15 +82,17 @@ export default function AddPhotosToAlbumDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {photosQuery.isLoading ? (
+        {photosQuery.isLoading && (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
           </div>
-        ) : photosQuery.data?.length === 0 ? (
+        )}
+        {photosQuery.data?.length === 0 && (
           <div className="text-center py-8">
             <p className="text-gray-500">You don't have any photos yet.</p>
           </div>
-        ) : (
+        )}
+        {photosQuery.data && photosQuery.data.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4">
             {photosQuery.data?.map((photo) => {
               const isInAlbum = isPhotoInAlbum(photo.id);
@@ -98,13 +101,15 @@ export default function AddPhotosToAlbumDialog({
               return (
                 <div
                   key={photo.id}
-                  className={`relative aspect-square rounded-md overflow-hidden border-2 cursor-pointer transition-all ${
-                    isSelected
-                      ? "border-teal-500 ring-2 ring-teal-500"
-                      : isInAlbum
-                        ? "border-gray-300 opacity-50"
-                        : "border-transparent hover:border-gray-300"
-                  }`}
+                  className={cn(
+                    "relative aspect-square rounded-md overflow-hidden border-2 cursor-pointer transition-all",
+                    {
+                      "border-teal-500 ring-2 ring-teal-500": isSelected,
+                      "border-gray-300 opacity-50": isInAlbum,
+                      "border-transparent hover:border-gray-300":
+                        !isSelected && !isInAlbum,
+                    },
+                  )}
                   onClick={() => {
                     if (!isInAlbum) {
                       togglePhotoSelection(photo.id);

@@ -48,16 +48,18 @@ export default function AddToAlbumDropdown({
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Select Album</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {albumsQuery.isLoading ? (
+          {albumsQuery.isLoading && (
             <div className="flex justify-center items-center py-2">
               <Loader2 className="h-4 w-4 animate-spin text-gray-500" />
             </div>
-          ) : albumsQuery.data?.length === 0 ? (
+          )}
+          {albumsQuery.data && albumsQuery.data.length > 0 && (
             <DropdownMenuItem disabled className="text-gray-500">
               No albums available
             </DropdownMenuItem>
-          ) : (
-            albumsQuery.data?.map((album) => (
+          )}
+          {albumsQuery.data &&
+            albumsQuery.data.map((album) => (
               <DropdownMenuItem
                 key={album.id}
                 onClick={() => handleAddToAlbum(album.id)}
@@ -68,8 +70,7 @@ export default function AddToAlbumDropdown({
                   image.includes(fileId),
                 ) && <Check className="h-4 w-4 ml-auto text-green-500" />}
               </DropdownMenuItem>
-            ))
-          )}
+            ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setIsCreateDialogOpen(true)}>
             <FolderPlus className="h-4 w-4 mr-2" />
