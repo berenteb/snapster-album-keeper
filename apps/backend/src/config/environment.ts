@@ -8,8 +8,6 @@ const environment = () => ({
   jwtSecret: env.get("JWT_SECRET").required().asString(),
   cookieDomain: env.get("COOKIE_DOMAIN").required().asString(),
   frontendUrl: env.get("FRONTEND_URL").required().asString(),
-  googleClientId: env.get("GOOGLE_CLIENT_ID").required().asString(),
-  googleClientSecret: env.get("GOOGLE_CLIENT_SECRET").required().asString(),
   salt: env.get("SALT").required().asIntPositive(),
   minio: {
     endPoint: env.get("STORAGE_ENDPOINT").required().asString(),
