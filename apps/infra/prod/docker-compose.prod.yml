@@ -5,7 +5,46 @@ services:
     build:
       context: ../../..
       dockerfile: apps/infra/prod/Dockerfile.frontend
+      args:
+        - VITE_BACKEND_URL=${VITE_BACKEND_URL:-http://localhost:3001}
     ports:
-      - 3000:3000
+      - '3000:3000'
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ../../..
+      dockerfile: apps/infra/prod/Dockerfile.backend
+    ports:
+      - '3001:3001'
+    env_file:
+      - ./.env.prod.backend
+    depends_on:
+      - postgres
+      - minio
+  postgres:
+    image: postgres:17
+    ports:
+      - "5432:5432"
     environment:
-      - VITE_BACKEND_URL=http://localhost:3001
+      POSTGRES_USER: snapster
+      POSTGRES_PASSWORD: snapster
+      POSTGRES_DB: snapster
+    volumes:
+      - snapster-postgres-data:/var/lib/postgresql/data
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: snapster
+      MINIO_ROOT_PASSWORD: snapster
+    entrypoint: minio server /data --console-address ":9001"
+    volumes:
+      - snapster-minio-data:/data
+
+volumes:
+  snapster-minio-data:
+  snapster-postgres-data:
