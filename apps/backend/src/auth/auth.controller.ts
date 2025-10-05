@@ -82,7 +82,7 @@ export class AuthController {
   private setCookie(res: Response, token: string) {
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: true,
+      secure: this.configService.get("cookieSecure"),
       domain: this.configService.get("cookieDomain"),
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     });

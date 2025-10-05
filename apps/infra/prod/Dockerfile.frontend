@@ -15,7 +15,7 @@ RUN yarn install --frozen-lockfile
 COPY apps/frontend/ ./apps/frontend/
 
 # Build the app with environment variables
-RUN VITE_BACKEND_URL=${VITE_BACKEND_URL} \
+RUN VITE_BACKEND_URL=${VITE_BACKEND_URL:-/api} \
     yarn build:frontend
 
 # Use the Caddy image

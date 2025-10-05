@@ -7,10 +7,12 @@ const environment = () => ({
   port: env.get("BACKEND_PORT").required().asPortNumber(),
   jwtSecret: env.get("JWT_SECRET").required().asString(),
   cookieDomain: env.get("COOKIE_DOMAIN").required().asString(),
+  cookieSecure: env.get("COOKIE_SECURE").default("false").asBool(),
   frontendUrl: env.get("FRONTEND_URL").required().asString(),
   salt: env.get("SALT").required().asIntPositive(),
   minio: {
     endPoint: env.get("STORAGE_ENDPOINT").required().asString(),
+    publicUrl: env.get("STORAGE_PUBLIC_URL").required().asString(),
     port: env.get("STORAGE_PORT").required().asPortNumber(),
     accessKey: env.get("STORAGE_ACCESS_KEY").required().asString(),
     secretKey: env.get("STORAGE_SECRET_KEY").required().asString(),

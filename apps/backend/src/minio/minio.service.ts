@@ -156,11 +156,19 @@ export class MinioService implements OnModuleInit {
         this.logger.warn(`File '${objectName}' does not exist`);
         return null;
       }
-      return await this.minioClient.presignedGetObject(
+      const url = await this.minioClient.presignedGetObject(
         bucket,
         objectName,
         expiry,
       );
+      const parsedUrl = new URL(url);
+      const publicUrl = this.configService.get("minio").publicUrl;
+
+      if (publicUrl) {
+        return `${publicUrl}${parsedUrl.pathname}${parsedUrl.search}`;
+      }
+
+      return parsedUrl.toString();
     } catch (error) {
       this.logger.error(`Failed to generate signed URL: ${error.message}`);
       throw error;
