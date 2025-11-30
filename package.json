@@ -3,16 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "engines": {
-    "node": "22.x"
-  },
   "scripts": {
     "dev:frontend": "yarn workspace @snapster/frontend dev",
-    "dev:backend": "yarn workspace @snapster/backend dev",
+    "dev:backen d": "yarn workspace @snapster/backend dev",
     "build:frontend": "yarn workspace @snapster/frontend build",
     "build:backend": "yarn workspace @snapster/backend build",
     "start:backend:prod": "yarn workspace @snapster/backend start:prod",
     "generate-api": "openapi-generator-cli generate -i http://localhost:3001/api-json -g typescript-axios -o apps/frontend/src/api",
+    "build:backend:prod": "docker build -t snapster-backend -f apps/infra/prod/Dockerfile.backend .",
+    "build:frontend:prod": "docker build -t snapster-frontend -f apps/infra/prod/Dockerfile.frontend .",
+    "kube:build": "eval $(minikube docker-env) && yarn build:backend:prod && yarn build:frontend:prod",
     "lint": "eslint ."
   },
   "workspaces": [
